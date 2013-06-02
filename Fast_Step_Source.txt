@@ -1,0 +1,31 @@
+/*
+Fast_Step - A program to output a 8-bit resolution step/ramp function on the Arduino's
+            digital output pins 2 through 9.
+Author - Brian Tilton
+Purpose - Output an 8-bit step/ramp function for use as input to demonstrate a
+          digital to analog converter (DAC)
+          Also demonstrates the power and versitility of using assembler commands
+          in conjuntion with Arduino's typical C-style language. Direct control
+          of registers and ports allows this program to produce a step function
+          with sharper steps, at a higher frequency, and in a smaller memory
+          space than a similar program with no assembler commands.
+Usage - Runs constantly when loaded onto the Arduino.
+Note - This program was written specifically for the Arduino Duemilenova equipped
+       with the Atmel ATmega328p microprocessor. Due to the nature of assembler commands
+       this program is not guarenteed to run on other chipsets.
+*/
+
+byte byteOut = B00000000; //Create binary byte variable for use as the output
+
+void setup()
+{                          //DDRX = Data Direction Register for Port X
+  DDRD = DDRD | B11111100; //Sets digital pins 2-7 on Port D as output pins
+  DDRB = DDRB | B000011;   //Sets digital pins 8-9 on Port B as output pins
+}
+
+void loop()
+{                         //PortD = Digital pins 2-7 PortB = Digital pins 8-13
+  PORTD = (byteOut << 2); //Set the output byte to digital pins 2-9 using
+  PORTB = (byteOut >> 6); //logical bit shift to allign with ports.
+  byteOut++;              //Then increment the output byte.
+}
